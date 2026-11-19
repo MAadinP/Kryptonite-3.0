@@ -21,7 +21,7 @@ def plot_h1_models(summary, models):
     ax.set_xticks(x, [SHORT_NAMES[m] for m in models])
     ax.set_ylabel("Test accuracy")
     ax.set_ylim(0.4, 1.0)
-    ax.legend(frameon=False, loc="upper left", ncol=3, handletextpad=0.1, columnspacing=0.6)
+    ax.legend(frameon=False, loc="lower right", handletextpad=0.1)
     return fig
 
 
@@ -37,7 +37,7 @@ def plot_h1_seeds(results, models):
     ax.set_xticks(range(len(models)), [SHORT_NAMES[m] for m in models])
     ax.set_ylabel("Test accuracy (each seed)")
     ax.set_ylim(0.4, 1.0)
-    ax.legend(frameon=False, loc="upper left", ncol=3, handletextpad=0.1, columnspacing=0.6)
+    ax.legend(frameon=False, loc="lower right", handletextpad=0.1)
     return fig
 
 
@@ -68,8 +68,8 @@ def plot_topk(res):
     ax.axhline(TARGET, color="0.4", ls="--", lw=1)
     ax.set_xlabel("Top features used, $k$")
     ax.set_ylabel("Test accuracy")
-    ax.set_ylim(0.4, 1.0)
-    ax.legend(frameon=False, fontsize=7, ncol=2, loc="upper left")
+    ax.set_ylim(0.3, 1.0)
+    ax.legend(frameon=False, loc="lower right")
     return fig
 
 
@@ -85,5 +85,5 @@ def plot_poly_degree(res, k_for):
     ax.set_xlabel("Polynomial degree $d$")
     ax.set_ylabel("Test accuracy")
     ax.set_ylim(0.4, 1.0)
-    ax.legend(frameon=False, fontsize=7, loc="upper left")
+    ax.legend(frameon=False, loc="lower right")
     return fig

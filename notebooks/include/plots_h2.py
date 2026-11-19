@@ -25,5 +25,5 @@ def plot_learning_curves(curves, fractions, n_train):
     ax.set_ylim(0.4, 1.0)
     handles = [Line2D([], [], color=COLORS[n], marker=MARKERS[n], ms=3, label=label(n)) for n in NS]
     handles += [Line2D([], [], color="0.3", ls=ls, label=model) for model, ls in STYLES.items()]
-    ax.legend(handles=handles, frameon=False, fontsize=7, ncol=2, loc="upper left")
+    fig.legend(handles=handles, frameon=False, ncol=3, loc="outside upper center")
     return fig

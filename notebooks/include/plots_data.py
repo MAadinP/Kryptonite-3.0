@@ -17,13 +17,12 @@ def plot_sizes():
     fig, ax = one_panel()
     x = np.arange(len(NAMES))
     labelled = ax.bar(x - 0.2, [len(load(n)[1]) for n in NAMES], width=0.4, color="0.3", label="labelled")
-    hidden = ax.bar(x + 0.2, [len(load_hidden(n)) for n in NAMES], width=0.4, color="0.7", label="hidden")
-    ax.bar_label(labelled, fontsize=7)
-    ax.bar_label(hidden, fontsize=7)
+    ax.bar(x + 0.2, [len(load_hidden(n)) for n in NAMES], width=0.4, color="0.7", label="hidden (10,000 each)")
+    ax.bar_label(labelled)
     ax.set_xticks(x, [label(n) for n in NAMES])
     ax.set_ylabel("Rows")
     ax.set_ylim(0, 37000)
-    ax.legend(frameon=False, loc="upper left")
+    fig.legend(frameon=False, ncol=2, loc="outside upper center")
     return fig
 
 
@@ -45,7 +44,7 @@ def plot_value_hist():
         ax.hist(load(n)[0].ravel(), bins=150, density=True, histtype="step", color=COLORS[n], label=label(n))
     ax.set_xlabel("Feature value $x_j$")
     ax.set_ylabel("Density")
-    ax.legend(frameon=False, loc="upper center", fontsize=8)
+    ax.legend(frameon=False, loc="upper center")
     return fig
 
 
@@ -59,7 +58,7 @@ def plot_noise_hist():
             label=f"Gaussian, $\\sigma = {sd:.3f}$")
     ax.set_xlabel("$x_j - \\mathrm{sign}(x_j)$")
     ax.set_ylabel("Density")
-    ax.legend(frameon=False, fontsize=7, loc="upper left")
+    fig.legend(frameon=False, loc="outside upper center")
     return fig
 
 
@@ -157,7 +156,7 @@ def plot_corr_by_order():
     ax.set_xticks(orders, ["single", "pairs", "triples"])
     ax.set_ylabel("Largest |corr| with $y$")
     ax.set_ylim(0, 0.2)
-    ax.legend(frameon=False, fontsize=7, ncol=2, loc="upper left")
+    ax.legend(frameon=False, ncol=2, loc="upper left")
     return fig
 
 
@@ -173,8 +172,8 @@ def plot_corr_ranked(k=15):
         ax.plot(ranks, fake, ls=":", color="0.4", label="triples, shuffled $y$")
         ax.set_xlabel("Rank")
     axes[0].set_ylabel("|corr| with $y$")
-    axes[0].set_ylim(0, 0.2)
-    axes[-1].legend(frameon=False, fontsize=7, loc="upper right")
+    axes[0].set_ylim(0, 0.16)
+    fig.legend(*axes[0].get_legend_handles_labels(), frameon=False, ncol=4, loc="outside lower center")
     return fig
 
 
@@ -182,14 +181,14 @@ def plot_corr_hist(name=40):
     fig, ax = one_panel()
     bins = np.linspace(-0.15, 0.15, 121)
     ax.hist(list(label_corr(name, 3, shuffle=True).values()), bins=bins, color="0.88",
-            label="triples, shuffled $y$")
+            label="shuffled $y$")
     for order in (2, 3):
         ax.hist(list(label_corr(name, order).values()), bins=bins, histtype="step",
                 color=ORDER_COLORS[order], label=ORDER_NAMES[order])
     ax.set_yscale("log")
     ax.set_xlabel(f"corr with $y$ ({label(name)})")
     ax.set_ylabel("Count")
-    ax.legend(frameon=False, fontsize=7, loc="upper left")
+    fig.legend(frameon=False, ncol=3, loc="outside upper center")
     return fig
 
 
@@ -203,7 +202,7 @@ def plot_top_pair_quadrants():
         im = ax.imshow(P, cmap="coolwarm", vmin=0.3, vmax=0.7)
         for a in range(2):
             for b in range(2):
-                ax.text(b, a, f"{P[a, b]:.2f}", ha="center", va="center", fontsize=9)
+                ax.text(b, a, f"{P[a, b]:.2f}", ha="center", va="center")
         ax.set_xticks([0, 1], ["$-1$", "$+1$"])
         ax.set_yticks([0, 1], ["$-1$", "$+1$"])
         ax.set_xlabel(f"sign $x_{{{j}}}$")
@@ -214,11 +213,11 @@ def plot_top_pair_quadrants():
 
 # ----------------------------------------------------------------------------- Kryptonite-40 vs 40-adapt
 def plot_40_vs_adapt():
-    fig, ax = plt.subplots(figsize=(COLUMN, 3.0), layout="constrained")
+    fig, ax = plt.subplots(figsize=(COLUMN, 3.6), layout="constrained")
     for order in (2, 3):
         a, b = label_corr(40, order), label_corr("40-adapt", order)
-        ax.scatter(list(a.values()), [b[k] for k in a], s=4, alpha=0.5, edgecolors="none",
-                   color=ORDER_COLORS[order], label=ORDER_NAMES[order])
+        ax.scatter(list(a.values()), [b[k] for k in a], s=4, alpha=0.5, edgecolors="none", color="0.3",
+                   label="every pair and triple" if order == 2 else None)
     for name in (40, "40-adapt"):
         top = strongest(name, 2) + strongest(name, 3, k=2)
         xs = [label_corr(40, len(idx))[idx] for idx in top]
@@ -226,7 +225,7 @@ def plot_40_vs_adapt():
         ax.scatter(xs, ys, s=30, marker=MARKERS[name], color=COLORS[name], zorder=3,
                    label=f"strongest in {label(name)}")
         i, j = top[0]
-        ax.annotate(f"$s_{{{i}}} s_{{{j}}}$", (xs[0], ys[0]), xytext=(6, 4), textcoords="offset points", fontsize=8)
+        ax.annotate(f"$s_{{{i}}} s_{{{j}}}$", (xs[0], ys[0]), xytext=(6, 4), textcoords="offset points")
     ax.axhline(0, color="0.8", lw=0.6, zorder=0)
     ax.axvline(0, color="0.8", lw=0.6, zorder=0)
     ax.set_xlim(-0.16, 0.16)
@@ -234,7 +233,7 @@ def plot_40_vs_adapt():
     ax.set_aspect("equal")
     ax.set_xlabel("corr with $y$ in Kryptonite-40")
     ax.set_ylabel("corr with $y$ in 40-adapt")
-    ax.legend(frameon=False, fontsize=7, loc="upper right")
+    fig.legend(frameon=False, loc="outside upper center")
     return fig
 
 
