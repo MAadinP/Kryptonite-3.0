@@ -1,0 +1,72 @@
+{
+  "H1_hparam_selection": {
+    "wall_s": 1730.6,
+    "cpu_s": 3064.6,
+    "energy_kWh": 0.021632465062499977,
+    "kgCO2e": 0.0026824256677499972,
+    "threads": 4,
+    "machine": "Intel64 Family 6 Model 186 Stepping 3, GenuineIntel",
+    "versions": {
+      "python": "3.12.1",
+      "numpy": "1.26.4",
+      "torch": "2.2.1+cpu",
+      "sklearn": "1.4.2"
+    }
+  },
+  "H1_features": {
+    "wall_s": 17571.9,
+    "cpu_s": 4928.1,
+    "energy_kWh": 0.2196492727962497,
+    "kgCO2e": 0.027236509826734964,
+    "threads": 4,
+    "machine": "Intel64 Family 6 Model 186 Stepping 3, GenuineIntel",
+    "versions": {
+      "python": "3.12.1",
+      "numpy": "1.26.4",
+      "torch": "2.2.1+cpu",
+      "sklearn": "1.4.2"
+    }
+  },
+  "H2_learning_curves": {
+    "wall_s": 23176.9,
+    "cpu_s": 17640.6,
+    "energy_kWh": 0.2897113698187495,
+    "kgCO2e": 0.03592420985752494,
+    "threads": 4,
+    "machine": "Intel64 Family 6 Model 186 Stepping 3, GenuineIntel",
+    "versions": {
+      "python": "3.12.1",
+      "numpy": "1.26.4",
+      "torch": "2.2.1+cpu",
+      "sklearn": "1.4.2"
+    }
+  },
+  "H1_main": {
+    "wall_s": 23469.0,
+    "cpu_s": 18308.2,
+    "energy_kWh": 0.29336216632124995,
+    "kgCO2e": 0.036376908623835,
+    "threads": 4,
+    "machine": "Intel64 Family 6 Model 186 Stepping 3, GenuineIntel",
+    "versions": {
+      "python": "3.12.1",
+      "numpy": "1.26.4",
+      "torch": "2.2.1+cpu",
+      "sklearn": "1.4.2"
+    }
+  },
+  "final_predictions": {
+    "wall_s": 698.0,
+    "cpu_s": 1361.8,
+    "energy_kWh": 0.0014185221354166666,
+    "kgCO2e": 0.00017589674479166667,
+    "threads": 4,
+    "machine": "Intel64 Family 6 Model 186 Stepping 3, GenuineIntel",
+    "versions": {
+      "python": "3.12.1",
+      "numpy": "1.26.4",
+      "torch": "2.2.1+cpu",
+      "sklearn": "1.4.2"
+    }
+  }
+}

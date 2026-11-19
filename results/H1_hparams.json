@@ -1,0 +1,56 @@
+{
+  "20": {
+    "LogReg (d=1)": {
+      "C": 0.01
+    },
+    "LogReg (d=2)": {
+      "C": 0.01
+    },
+    "MLP (raw x)": {
+      "width": 512,
+      "depth": 2,
+      "weight_decay": 0.1
+    },
+    "MLP (sign x)": {
+      "width": 512,
+      "depth": 2,
+      "weight_decay": 0.1
+    }
+  },
+  "30": {
+    "LogReg (d=1)": {
+      "C": 0.01
+    },
+    "LogReg (d=2)": {
+      "C": 0.1
+    },
+    "MLP (raw x)": {
+      "width": 256,
+      "depth": 3,
+      "weight_decay": 0.01
+    },
+    "MLP (sign x)": {
+      "width": 256,
+      "depth": 3,
+      "weight_decay": 0.01
+    }
+  },
+  "40": {
+    "LogReg (d=1)": {
+      "C": 0.1
+    },
+    "LogReg (d=2)": {
+      "C": 10.0
+    },
+    "MLP (raw x)": {
+      "width": 512,
+      "depth": 2,
+      "weight_decay": 0.1
+    },
+    "MLP (sign x)": {
+      "width": 512,
+      "depth": 2,
+      "weight_decay": 0.1
+    }
+  }
+}
