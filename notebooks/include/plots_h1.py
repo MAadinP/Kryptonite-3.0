@@ -54,6 +54,20 @@ def plot_influence(influence):
     return fig
 
 
+def plot_influence_column(influence):
+    # one-column version of plot_influence: one row per dataset, the dataset named inside each panel
+    fig, axes = plt.subplots(3, 1, figsize=(COLUMN, 3.4), layout="constrained", sharey=True)
+    for ax, n in zip(axes, NS):
+        ax.bar(range(len(influence[n])), influence[n], width=0.7, color=COLORS[n])
+        ax.text(0.99, 0.95, label(n), transform=ax.transAxes, ha="right", va="top")
+        ax.set_xlim(-0.8, len(influence[n]) - 0.2)
+        ax.set_ylim(0, 1)
+        ax.set_yticks([0, 0.5, 1])
+    axes[-1].set_xlabel("Feature $j$")
+    fig.supylabel("P(prediction flips)", fontsize=10)
+    return fig
+
+
 def plot_topk(res):
     # test accuracy against the number of top features k: the paper's polynomial LR with every
     # product of the k features (d = k), and the lookup table (dotted)
@@ -70,6 +84,47 @@ def plot_topk(res):
     ax.set_ylabel("Test accuracy")
     ax.set_ylim(0.3, 1.0)
     ax.legend(frameon=False, loc="lower right")
+    return fig
+
+
+def plot_h1_summary(res, k_for, top=14):
+    # the three H1 analyses in one page-wide strip (the report's figure):
+    # (a) flip influence sorted from largest to smallest (mean over seeds), first `top` ranks
+    # (b) the paper's polynomial LR on the top k features with all products (d = k)
+    # (c) the paper's polynomial LR on the top k_for[n] features against its degree d
+    fig, axes = plt.subplots(1, 3, figsize=(PAGE, 1.85), layout="constrained")
+    ax = axes[0]
+    for n in NS:
+        inf = np.sort(np.mean(res[n]["influence"], axis=0))[::-1][:top]
+        ax.plot(range(1, top + 1), inf, marker=MARKERS[n], ms=3.5, color=COLORS[n], label=label(n))
+    ax.axvline(10.5, color="0.4", ls=":", lw=1)
+    ax.set_xlabel("Feature rank")
+    ax.set_ylabel("P(prediction flips)")
+    ax.set_ylim(0, 1)
+    ax.set_xticks([1, 5, 10, top])
+    ax.legend(frameon=False, loc="lower left", handletextpad=0.2, borderaxespad=0.1)
+
+    ax = axes[1]
+    for n in NS:
+        ks = [k for k in sorted(res[n]["lookup"]) if f"{k},{k}" in res[n]["poly"]]
+        ax.plot(ks, [np.mean(res[n]["poly"][f"{k},{k}"]["test"]) for k in ks], marker=MARKERS[n], ms=3.5,
+                color=COLORS[n])
+    ax.set_xlabel("Top features used, $k$")
+    ax.set_xticks([2, 4, 6, 8, 10, 12])
+
+    ax = axes[2]
+    for n in NS:
+        k = k_for[n]
+        ds = sorted(int(key.split(",")[1]) for key in res[n]["poly"] if int(key.split(",")[0]) == k)
+        ax.plot(ds, [np.mean(res[n]["poly"][f"{k},{d}"]["test"]) for d in ds], marker=MARKERS[n], ms=3.5,
+                color=COLORS[n])
+    ax.set_xlabel(f"Degree $d$ (top $k={k_for[NS[0]]}$)")
+    ax.set_xticks([1, 2, 4, 6, 8, 10])
+
+    for ax in axes[1:]:
+        ax.axhline(TARGET, color="0.4", ls="--", lw=1)
+        ax.set_ylim(0.45, 1.0)
+        ax.set_ylabel("Test accuracy")
     return fig
 
 
