@@ -124,5 +124,19 @@
       "torch": "2.2.1+cpu",
       "sklearn": "1.4.2"
     }
+  },
+  "H3_lora": {
+    "wall_s": 541.4,
+    "cpu_s": 1303.4,
+    "energy_kWh": 0.0013576822916666668,
+    "kgCO2e": 0.00016835260416666668,
+    "threads": 4,
+    "machine": "AMD64 Family 23 Model 1 Stepping 1, AuthenticAMD",
+    "versions": {
+      "python": "3.12.1",
+      "numpy": "1.26.4",
+      "torch": "2.2.1+cpu",
+      "sklearn": "1.4.2"
+    }
   }
 }

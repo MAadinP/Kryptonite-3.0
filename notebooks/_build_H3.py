@@ -17,10 +17,11 @@ The experiment itself is `run_lora.py` in the repository root (LoRA ranks 1--32,
 linear probe, MLP probe and from-scratch, on 5 seeded 60/20/20 splits; Adam, lr $10^{-3}$, batch 128, at most 100
 epochs, early stopping on validation accuracy with patience 15). This notebook runs it unchanged, logs its CPU time
 for the sustainability section, and draws the report's figure from the numbers it saves (`results_lora.json`)."""),
-code(r"""import json
-import os
+code(r"""import os
+os.environ["MKL_CBWR"] = "COMPATIBLE"  # before torch is imported: same numbers on every CPU (see run_lora.py)
+
+import json
 import runpy
-import shutil
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -33,7 +34,7 @@ from include.plots_h3 import plot_lora_rank, lora_ranks
 use_paper_style()
 RESULTS_FILE = ROOT / "results_lora.json"
 PREDICTIONS = ROOT / "hiddenlabels" / "y_predicted_40_adapt.npy"
-RERUN = not RESULTS_FILE.exists()  # set to True to rerun the experiment (about 15 CPU-minutes)"""),
+RERUN = not RESULTS_FILE.exists()  # set to True to rerun the experiment (about 15 CPU-minutes; rerun with the versions in requirements.txt)"""),
 md(r"""## 1. Run the experiment
 
 `run_lora.py` uses paths relative to the repository root, so it runs from there. It also rewrites the submitted
@@ -64,6 +65,15 @@ for key, name in names.items():
     print(f"{name:<22}{res['params'][key]:>10,}   {t.mean():.3f} +- {t.std():.3f}    {v.mean():.3f}")
 
 lora = [k for k in names if k.startswith("lora")]
+
+# numbers quoted in the report's text and figure caption
+for key in lora:
+    t = np.array(res["test"][key])
+    print(f"{names[key]:<10} worst seed {t.min():.3f}, best seed {t.max():.3f}")
+ft = np.array(res["test"]["full_finetune"])
+print(f"full fine-tuning range {ft.min():.3f}--{ft.max():.3f}")
+frozen = [np.mean(res["test"][k]) for k in ("zero_shot", "linear_probe", "mlp_probe", "scratch")]
+print(f"frozen / scratch means {min(frozen):.3f}--{max(frozen):.3f}")
 print("\nLoRA mean test accuracy above 90% at every rank:", all(np.mean(res["test"][k]) > 0.90 for k in lora))
 print("rank with the highest mean validation accuracy:", max(lora, key=lambda k: np.mean(res["val"][k])))"""),
 md(r"""## 3. Figure

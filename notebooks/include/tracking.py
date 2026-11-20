@@ -11,14 +11,17 @@ import torch
 
 from .config import RESULTS
 
-CPU_POWER_W = 45.0      # rough laptop power draw with every core busy (W), change for your machine
+CPU_POWER_W = 45.0      # rough laptop power draw with every core busy (W)
+CORES = 12              # logical cores of the laptop most experiments ran on
+# Fixed, not os.cpu_count(): the estimate must not depend on which machine redraws the figure
+CORE_POWER_W = CPU_POWER_W / CORES  # 3.75 W per busy logical core
 GRID_INTENSITY = 0.124  # kg CO2e per kWh, GB grid average
 
 
 def energy_kwh(cpu_s):
     # CPU time x the power of one busy logical core. We use CPU time, not wall time, because time spent
     # asleep or sharing the machine with another run adds to wall time but not to CPU time.
-    return cpu_s * CPU_POWER_W / os.cpu_count() / 3.6e6
+    return cpu_s * CORE_POWER_W / 3.6e6
 
 
 @contextmanager

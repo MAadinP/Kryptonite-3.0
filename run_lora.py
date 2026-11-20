@@ -2,7 +2,7 @@
 LoRA adaptation of KryptoNet-40 on Kryptonite-40-Adapt (CPU only).
 
 Put this file in the repo root (next to kryptonet.py) and run:
-    python run_lora_final.py
+    python run_lora.py
 
 Pure LoRA: every pretrained weight/bias (including the output head) is FROZEN.
 Only A and B in the four hidden layers are trained.
@@ -12,6 +12,15 @@ Produces:
     hiddenlabels/y_predicted_40_adapt.npy       (10,000 binary labels to submit)
 """
 import copy, json, math, os, time
+
+# Same numbers on every computer (given the package versions in requirements.txt):
+#  * MKL_CBWR=COMPATIBLE makes Intel's MKL (torch's CPU matrix library) use one code path on every x86 CPU.
+#    By default it picks a CPU-specific path (AVX2/AVX-512 on Intel, a generic one on AMD), and the
+#    different float rounding changes the trained models. Must be set before MKL does any work.
+#  * a fixed thread count (below) fixes the order of floating-point sums.
+os.environ.setdefault("MKL_CBWR", "COMPATIBLE")
+N_THREADS = 4
+
 import numpy as np
 import torch
 import torch.nn as nn
@@ -119,9 +128,9 @@ def stats(v):
 # ------------------------------ main ---------------------------------------
 if __name__ == "__main__":
     _t0 = time.process_time()
-    torch.set_num_threads(os.cpu_count())
-
-    torch.set_num_threads(os.cpu_count())
+    assert os.environ.get("MKL_CBWR") == "COMPATIBLE", "set MKL_CBWR=COMPATIBLE before importing torch"
+    torch.set_num_threads(N_THREADS)        # not os.cpu_count(): that differs between machines
+    torch.use_deterministic_algorithms(True)
     X = torch.from_numpy(np.load(X_PATH)).float()
     y = torch.from_numpy(np.load(Y_PATH)).long()
     Xh = torch.from_numpy(np.load(HIDDEN_PATH)).float()
@@ -185,8 +194,10 @@ if __name__ == "__main__":
     print("\n=== test accuracy, mean +/- std over", len(SEEDS), "seeds ===")
     for m in methods:
         print(f"{m:14s} trainable {params[m]:7d}  {stats(test[m])}")
-    json.dump({"val": val, "test": test, "params": params, "seeds": SEEDS},
-              open("results_lora.json", "w"), indent=1)
+    with open("results_lora.json", "w") as f:
+        json.dump({"val": val, "test": test, "params": params, "seeds": SEEDS,
+                   "versions": {"torch": torch.__version__, "numpy": np.__version__},
+                   "threads": N_THREADS, "mkl_cbwr": os.environ["MKL_CBWR"]}, f, indent=1)
 
     # ---- final model -> hidden-set predictions -----------------------------
     best_r = 16

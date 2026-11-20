@@ -33,7 +33,7 @@ training anything; it is the quickest way to check a figure.
 
 Every one of these figures is also redrawn, from the saved results only, by `notebooks/report_figures.ipynb`.
 `H3_lora.ipynb` runs the experiment script `run_lora.py` unchanged and draws the figure from its output
-`results_lora.json`; it replaces the earlier `lora_fig.py`, which had the numbers typed in by hand.
+`results_lora.json`; no number in the H3 figure or table is typed in by hand.
 
 The report's tables are printed in `H1_learnability.ipynb` and `H1_features.ipynb` (H1), `H2_more_data.ipynb` (H2)
 and `H3_lora.ipynb` (H3). Numbers quoted in the text that those notebooks do not print are in:
@@ -60,6 +60,8 @@ run_notebook.py       runs notebooks in place and saves their outputs
 ## Reproducing the results
 
 ```
+conda create -n kryptonite python=3.12.1          # or any Python 3.12.1 environment
+conda activate kryptonite
 pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
 python run_notebook.py notebooks/<name>.ipynb      # or open it in Jupyter
 ```
@@ -89,6 +91,13 @@ Every source of randomness is seeded: the stratified 60/20/20 splits (`random_st
 shuffled-label controls. With the versions in `requirements.txt` and 4 torch threads, retraining reproduces the saved
 models bit for bit; `H1_learnability.ipynb` (section 5) reloads every saved model and checks that it reproduces its
 saved test predictions.
+
+H3 (`run_lora.py`) trains many more weights, so the CPU's floating-point code path matters too. By default Intel's MKL
+(torch's CPU matrix library) uses different instructions on Intel and AMD processors, which changes the trained models
+in the last bits and, over 100 epochs, the accuracies in the third decimal. `run_lora.py` therefore sets
+`MKL_CBWR=COMPATIBLE` (one code path on every x86 CPU), fixes 4 threads and turns on
+`torch.use_deterministic_algorithms`. Different torch versions still round differently, so use the versions in
+`requirements.txt`; `results_lora.json` records the versions and settings it was produced with.
 
 ## Hidden-set predictions
 
