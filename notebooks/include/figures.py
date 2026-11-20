@@ -18,8 +18,10 @@ def use_paper_style():
 
 def savefig(fig, name):
     FIGURES.mkdir(exist_ok=True)
-    fig.savefig(FIGURES / f"{name}.pdf", bbox_inches="tight")
-    fig.savefig(FIGURES / f"{name}.png", dpi=200, bbox_inches="tight")
+    # save at exactly the drawn size (no "tight" cropping): a COLUMN-wide figure then fills
+    # \linewidth at 100% scale, so its 10pt text stays 10pt in the report
+    fig.savefig(FIGURES / f"{name}.pdf")
+    fig.savefig(FIGURES / f"{name}.png", dpi=200)
 
 
 def label(name):

@@ -11,7 +11,7 @@ SHORT_NAMES = {"LogReg (d=1)": "LR\n$d{=}1$", "LogReg (d=2)": "LR\n$d{=}2$",
 
 def plot_h1_models(summary, models):
     # seed means with +-eps (Chebyshev, union bound over the models)
-    fig, ax = plt.subplots(figsize=(COLUMN, 2.5), layout="constrained")
+    fig, ax = plt.subplots(figsize=(COLUMN, 1.95), layout="constrained")
     x = np.arange(len(models))
     for k, n in enumerate(NS):
         means = [summary[n][m]["mean"] for m in models]
@@ -56,7 +56,7 @@ def plot_influence(influence):
 
 def plot_influence_column(influence):
     # one-column version of plot_influence: one row per dataset, the dataset named inside each panel
-    fig, axes = plt.subplots(3, 1, figsize=(COLUMN, 3.4), layout="constrained", sharey=True)
+    fig, axes = plt.subplots(3, 1, figsize=(COLUMN, 2.7), layout="constrained", sharey=True)
     for ax, n in zip(axes, NS):
         ax.bar(range(len(influence[n])), influence[n], width=0.7, color=COLORS[n])
         ax.text(0.99, 0.95, label(n), transform=ax.transAxes, ha="right", va="top")
@@ -71,7 +71,7 @@ def plot_influence_column(influence):
 def plot_topk(res):
     # test accuracy against the number of top features k: the paper's polynomial LR with every
     # product of the k features (d = k), and the lookup table (dotted)
-    fig, ax = plt.subplots(figsize=(COLUMN, 2.4), layout="constrained")
+    fig, ax = plt.subplots(figsize=(COLUMN, 1.9), layout="constrained")
     for n in NS:
         ks = sorted(res[n]["lookup"])
         poly_ks = [k for k in ks if f"{k},{k}" in res[n]["poly"]]
@@ -82,8 +82,8 @@ def plot_topk(res):
     ax.axhline(TARGET, color="0.4", ls="--", lw=1)
     ax.set_xlabel("Top features used, $k$")
     ax.set_ylabel("Test accuracy")
-    ax.set_ylim(0.3, 1.0)
-    ax.legend(frameon=False, loc="lower right")
+    ax.set_ylim(0.45, 1.22); ax.set_yticks([0.6, 0.8, 1.0])
+    ax.legend(frameon=False, loc="upper left", ncol=2, columnspacing=0.8, handlelength=1.5)
     return fig
 
 
@@ -130,7 +130,7 @@ def plot_h1_summary(res, k_for, top=14):
 
 def plot_poly_degree(res, k_for):
     # test accuracy of the paper's polynomial LR on the top k features, against its degree d
-    fig, ax = plt.subplots(figsize=(COLUMN, 2.4), layout="constrained")
+    fig, ax = plt.subplots(figsize=(COLUMN, 1.9), layout="constrained")
     for n in NS:
         k = k_for[n]
         ds = sorted(int(key.split(",")[1]) for key in res[n]["poly"] if int(key.split(",")[0]) == k)

@@ -145,7 +145,7 @@ def plot_pair_corr():
 
 
 def plot_corr_by_order():
-    fig, ax = one_panel()
+    fig, ax = one_panel(1.85)
     orders = [1, 2, 3]
     for n in NAMES:
         real = [max(map(abs, label_corr(n, k).values())) for k in orders]
@@ -155,8 +155,8 @@ def plot_corr_by_order():
     ax.plot([], [], ls=":", lw=1, color="0.4", label="shuffled $y$")
     ax.set_xticks(orders, ["single", "pairs", "triples"])
     ax.set_ylabel("Largest |corr| with $y$")
-    ax.set_ylim(0, 0.2)
-    ax.legend(frameon=False, ncol=2, loc="upper left")
+    ax.set_ylim(0, 0.3); ax.set_yticks([0, 0.05, 0.1, 0.15])
+    ax.legend(frameon=False, ncol=2, loc="upper left", columnspacing=0.8, handlelength=1.5)
     return fig
 
 

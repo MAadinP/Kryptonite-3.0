@@ -11,7 +11,7 @@ STYLES = {"MLP": "-", "quad. LR": "--"}
 
 def plot_learning_curves(curves, fractions, n_train):
     # curves[n][model][fraction] -> test accuracies over seeds; n_train[n] = size of the full training split
-    fig, ax = plt.subplots(figsize=(COLUMN, 2.5), layout="constrained")
+    fig, ax = plt.subplots(figsize=(COLUMN, 2.2), layout="constrained")
     for n in NS:
         x = [f * n_train[n] for f in fractions]
         for model, ls in STYLES.items():
